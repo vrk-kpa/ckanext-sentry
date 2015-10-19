@@ -61,8 +61,7 @@ class SentryPlugin(plugins.SingletonPlugin):
         for name in loggers:
             logger = logging.getLogger(name)
             logger.addHandler(handler)
-            if name == 'sentry.errors':
-                logger.setLevel(sentry_log_level)
+            logger.setLevel(sentry_log_level)
 
         log.debug('Setting up Sentry logger with level {0}'.format(
             sentry_log_level))
