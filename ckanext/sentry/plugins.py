@@ -1,15 +1,24 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import os
+import logging
+
 from raven.contrib.pylons import Sentry
 from raven.handlers.logging import SentryHandler
 
-import logging
 
 from ckan import plugins
 
 
 log = logging.getLogger(__name__)
+
+
+CONFIG_FROM_ENV_VARS = {
+    'sentry.dsn': 'CKAN_SENTRY_DSN',  # Alias for SENTRY_DSN, used by raven
+    'sentry.configure_logging': 'CKAN_SENTRY_CONFIGURE_LOGGING',
+    'sentry.log_level': 'CKAN_SENTRY_LOG_LEVEL',
+}
 
 
 class SentryPlugin(plugins.SingletonPlugin):
@@ -24,6 +33,13 @@ class SentryPlugin(plugins.SingletonPlugin):
 
     def make_error_log_middleware(self, app, config):
 
+        for option in CONFIG_FROM_ENV_VARS:
+            from_env = os.environ.get(CONFIG_FROM_ENV_VARS[option], None)
+            if from_env:
+                config[option] = from_env
+        if not config.get('sentry.dsn') and os.environ.get('SENTRY_DSN'):
+            config['sentry.dsn'] = os.environ['SENTRY_DSN']
+
         if plugins.toolkit.asbool(config.get('sentry.configure_logging')):
             self._configure_logging(config)
 
@@ -37,7 +53,6 @@ class SentryPlugin(plugins.SingletonPlugin):
         Based on @rshk work on
         https://github.com/opendatatrentino/ckanext-sentry
         '''
-
         handler = SentryHandler(config.get('sentry.dsn'))
         handler.setLevel(logging.NOTSET)
 
