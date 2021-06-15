@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 import os
 import logging
 
-from raven.contrib.pylons import Sentry
-from raven.handlers.logging import SentryHandler
-
+import sentry_sdk
+from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
+from sentry_sdk.integrations.logging import SentryHandler
 
 from ckan import plugins
 
@@ -44,7 +44,9 @@ class SentryPlugin(plugins.SingletonPlugin):
             self._configure_logging(config)
 
         log.debug('Adding Sentry middleware...')
-        return Sentry(app, config)
+        sentry_sdk.init(dsn=config.get('sentry.dsn'))
+        SentryWsgiMiddleware(app)
+        return app
 
     def _configure_logging(self, config):
         '''
