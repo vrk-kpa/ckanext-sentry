@@ -34,7 +34,11 @@ You must provide a Sentry DSN::
 
     sentry.dsn = https://xxxxxx:xxxxxx@sentry.domain.com/1
 
-You can see a full list of supported options for the Sentry client on the `official Raven documentation`_.
+You can see a full list of supported options for the Sentry client on the `official Sentry documentation`_.
+
+If you want to setup multiple environments, you can specify environment id::
+
+    sentry.environment = some_id
 
 If you want Sentry to record your log messages, you can turn it on adding the following options::
 
@@ -55,5 +59,5 @@ The configuration also supports env vars named like the `ckanext-envvars`_ exten
 
 
 .. _Sentry: http://getsentry.com/
-.. _official Raven documentation: http://raven.readthedocs.org/en/latest/advanced.html#configuring-the-client
+.. _official Sentry documentation: https://docs.sentry.io/platforms/python/
 .. _ckanext-envvars: https://github.com/okfn/ckanext-envvars
