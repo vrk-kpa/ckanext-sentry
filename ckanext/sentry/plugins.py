@@ -5,8 +5,12 @@ import os
 import logging
 
 import sentry_sdk
+from flask import Blueprint
 from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
 from sentry_sdk.integrations.logging import SentryHandler
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.rq import RqIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 from ckan import plugins
 
@@ -24,12 +28,9 @@ CONFIG_FROM_ENV_VARS = {
 class SentryPlugin(plugins.SingletonPlugin):
     '''A simple plugin that add the Sentry middleware to CKAN'''
     plugins.implements(plugins.IMiddleware, inherit=True)
+    plugins.implements(plugins.IBlueprint)
 
-    def make_middleware(self, app, config):
-        if plugins.toolkit.check_ckan_version('2.3'):
-            return app
-        else:
-            return self.make_error_log_middleware(app, config)
+    # IMiddleware
 
     def make_error_log_middleware(self, app, config):
 
@@ -44,11 +45,14 @@ class SentryPlugin(plugins.SingletonPlugin):
             self._configure_logging(config)
 
         log.debug('Adding Sentry middleware...')
-        sentry_sdk.init(dsn=config.get('sentry.dsn'))
+        sentry_sdk.init(dsn=config.get('sentry.dsn'),
+                        integrations=[FlaskIntegration(), RqIntegration(), RedisIntegration()],
+                        environment=config.get('sentry.environment', ""))
         SentryWsgiMiddleware(app)
         return app
 
-    def _configure_logging(self, config):
+    @staticmethod
+    def _configure_logging(config):
         '''
         Configure the Sentry log handler to the specified level
 
@@ -67,3 +71,17 @@ class SentryPlugin(plugins.SingletonPlugin):
 
         log.debug('Setting up Sentry logger with level {0}'.format(
             sentry_log_level))
+
+    # IBlueprint
+    def get_blueprint(self):
+
+        def _trigger_error():
+            division_by_zero = 1 / 0  # noqa
+
+        # Create Blueprint for plugin
+        blueprint = Blueprint(self.name, self.__module__)
+
+        # Add plugin url rules to Blueprint object
+        blueprint.add_url_rule(u'/debug-sentry', view_func=_trigger_error)
+
+        return blueprint
