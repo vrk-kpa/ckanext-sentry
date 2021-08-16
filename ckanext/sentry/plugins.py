@@ -47,7 +47,8 @@ class SentryPlugin(plugins.SingletonPlugin):
         log.debug('Adding Sentry middleware...')
         sentry_sdk.init(dsn=config.get('sentry.dsn'),
                         integrations=[FlaskIntegration(), RqIntegration(), RedisIntegration()],
-                        environment=config.get('sentry.environment', ""))
+                        environment=config.get('sentry.environment', ""),
+                        traces_sample_rate=0.2)
         SentryWsgiMiddleware(app)
         return app
 
