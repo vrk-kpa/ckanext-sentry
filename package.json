@@ -2,5 +2,9 @@
   "name": "ckanext-sentry",
   "version": "1.0.0",
   "dependencies": {
+    "@sentry/browser": "^6.19.7"
+  },
+  "scripts": {
+    "postinstall": "cp node_modules/@sentry/browser/build/bundle.js ckanext/sentry/assets/vendor/sentry.js"
   }
 }

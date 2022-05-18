@@ -89,17 +89,19 @@ class SentryPlugin(plugins.SingletonPlugin):
 
         return blueprint
 
-
     # IConfigurer
+
     def update_config(self, config):
         plugins.toolkit.add_template_directory(config, 'templates')
         plugins.toolkit.add_resource('assets', 'sentry')
 
     # ITemplateHelpers
+
     def get_helpers(self):
         return {
             'get_sentry_config': get_sentry_config
         }
+
 
 def get_sentry_config():
     return {
