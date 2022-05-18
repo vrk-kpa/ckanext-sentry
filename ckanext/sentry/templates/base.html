@@ -1,0 +1,12 @@
+{% ckan_extends %}
+
+{% block styles %}
+    {{ super() }}
+    {% asset 'sentry/sentry' %}}
+{% endblock %}}
+
+{% block body_extras %}
+    {{ super() }}
+    {% set sentry_config = h.get_sentry_config() %}
+    <div data-sentry="sentry" data-dsn="{{ sentry_config.dsn }}" data-environment="{{ sentry_config.environment }}"></div>
+{% endblock %}

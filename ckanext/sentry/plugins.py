@@ -29,6 +29,8 @@ class SentryPlugin(plugins.SingletonPlugin):
     '''A simple plugin that add the Sentry middleware to CKAN'''
     plugins.implements(plugins.IMiddleware, inherit=True)
     plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IConfigurer)
+    plugins.implements(plugins.ITemplateHelpers)
 
     # IMiddleware
 
@@ -86,3 +88,21 @@ class SentryPlugin(plugins.SingletonPlugin):
         blueprint.add_url_rule(u'/debug-sentry', view_func=_trigger_error)
 
         return blueprint
+
+
+    # IConfigurer
+    def update_config(self, config):
+        plugins.toolkit.add_template_directory(config, 'templates')
+        plugins.toolkit.add_resource('assets', 'sentry')
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            'get_sentry_config': get_sentry_config
+        }
+
+def get_sentry_config():
+    return {
+        "dsn": plugins.toolkit.config.get('sentry.dsn', ""),
+        "environment": plugins.toolkit.config.get('sentry.environment', "")
+    }
