@@ -6,10 +6,3 @@ sentry:
   extra:
     preload:
       - base/main
-      - sentry/vendor
-
-vendor:
-  contents:
-    - vendor/sentry.js
-  filters: rjsmin
-  output: sentry/%(version)s_vendor.js

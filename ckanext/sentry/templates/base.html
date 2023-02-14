@@ -1,7 +1,12 @@
 {% ckan_extends %}
 
-{% block styles %}
+{% block head_extras %}
     {{ super() }}
+    <script
+      src="https://browser.sentry-cdn.com/7.37.2/bundle.tracing.min.js"
+      integrity="sha384-fvPQDlndgINMbEsMXtCyqYrvvpsE2UTMA4Vh/PMVlnbH3fuBwzyPMtYDKrqANFf4"
+      crossorigin="anonymous"
+    ></script>
     {% asset 'sentry/sentry' %}
 {% endblock %}}
 
