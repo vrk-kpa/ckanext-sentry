@@ -50,7 +50,8 @@ class SentryPlugin(plugins.SingletonPlugin):
         sentry_sdk.init(dsn=config.get('sentry.dsn'),
                         integrations=[FlaskIntegration(), RqIntegration(), RedisIntegration()],
                         environment=config.get('sentry.environment', ""),
-                        traces_sample_rate=0.2)
+                        traces_sample_rate=float(config.get('sentry.traces_sample_rate', 0.2)),
+                        profiles_sample_rate=float(config.get('sentry.profiles_sample_rate', 0.2)))
         SentryWsgiMiddleware(app)
         return app
 
@@ -99,12 +100,16 @@ class SentryPlugin(plugins.SingletonPlugin):
 
     def get_helpers(self):
         return {
-            'get_sentry_config': get_sentry_config
+            'get_sentry_config': get_sentry_config,
+            'get_sentry_loader_script': get_sentry_loader_script
         }
 
 
 def get_sentry_config():
     return {
-        "dsn": plugins.toolkit.config.get('sentry.dsn', ""),
-        "environment": plugins.toolkit.config.get('sentry.environment', "")
+        "environment": plugins.toolkit.config.get('sentry.environment', ""),
+        "tracesSampleRate": plugins.toolkit.config.get('sentry.traces_sample_rate', '0.2')
     }
+
+def get_sentry_loader_script():
+    return plugins.toolkit.config.get('sentry.loader_script')

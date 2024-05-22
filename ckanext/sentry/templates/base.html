@@ -1,17 +1,20 @@
 {% ckan_extends %}
 
+{% set sentry_loader_script = h.get_sentry_loader_script() %}
+
 {% block head_extras %}
-    {{ super() }}
-    <script
-      src="https://browser.sentry-cdn.com/7.37.2/bundle.tracing.min.js"
-      integrity="sha384-fvPQDlndgINMbEsMXtCyqYrvvpsE2UTMA4Vh/PMVlnbH3fuBwzyPMtYDKrqANFf4"
-      crossorigin="anonymous"
-    ></script>
+  {{ super() }}
+
+  {% if sentry_loader_script %}
+    <script src="{{ sentry_loader_script }}" crossorigin="anonymous"></script>
     {% asset 'sentry/sentry' %}
+  {% endif %}
 {% endblock %}}
 
 {% block body_extras %}
-    {{ super() }}
+  {{ super() }}
+  {% if sentry_loader_script %}
     {% set sentry_config = h.get_sentry_config() %}
-    <div data-sentry="sentry" data-dsn="{{ sentry_config.dsn }}" data-environment="{{ sentry_config.environment }}"></div>
+    <div data-sentry="sentry" data-environment="{{ sentry_config.environment }}" data-tracesSampleRate="{{ sentry_config.tracesSampleRate }}"></div>
+  {% endif %}
 {% endblock %}

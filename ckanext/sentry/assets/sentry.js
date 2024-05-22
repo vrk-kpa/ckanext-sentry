@@ -1,10 +1,9 @@
-let dsn = document.querySelector("[data-sentry]").getAttribute('data-dsn')
-let environment = document.querySelector("[data-sentry]").getAttribute('data-environment')
+const environment = document.querySelector("[data-sentry]").getAttribute('data-environment')
+const tracesSampleRate = document.querySelector("[data-sentry]").getAttribute('data-tracesSampleRate')
+
 Sentry.init({
-    dsn: dsn,
     release: "",
-    integrations: [],
-    tracesSampleRate: 0.2,
+    tracesSampleRate: tracesSampleRate,
     environment: environment
 });
 
