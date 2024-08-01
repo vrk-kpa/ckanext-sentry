@@ -4,7 +4,6 @@ import re
 
 from setuptools import setup, find_packages
 
-from ckanext.sentry import __version__, __description__
 
 RE_REQUIREMENT = re.compile(r'^\s*-r\s*(?P<filename>.*)$')
 
@@ -38,8 +37,8 @@ long_description = '\n'.join((
 
 setup(
     name='ckanext-sentry',
-    version=__version__,
-    description=__description__,
+    version='0.0.2',
+    description='Sentry support for CKAN',
     long_description=long_description,
     keywords='CKAN, Sentry',
     author='Adrià Mercader',
