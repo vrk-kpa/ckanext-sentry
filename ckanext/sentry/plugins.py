@@ -7,10 +7,10 @@ import logging
 import sentry_sdk
 from flask import Blueprint
 from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
-from sentry_sdk.integrations.logging import SentryHandler
 from sentry_sdk.integrations.flask import FlaskIntegration
 from sentry_sdk.integrations.rq import RqIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from ckan import plugins
 
@@ -43,38 +43,23 @@ class SentryPlugin(plugins.SingletonPlugin):
         if not config.get('sentry.dsn') and os.environ.get('SENTRY_DSN'):
             config['sentry.dsn'] = os.environ['SENTRY_DSN']
 
+        sentry_log_levels = {
+            'level': logging.INFO,
+            'event_level': logging.ERROR
+        }
+
         if plugins.toolkit.asbool(config.get('sentry.configure_logging')):
-            self._configure_logging(config)
+            sentry_log_levels['level'] = config.get('sentry.log_level', logging.INFO)
+            sentry_log_levels['event_level'] = config.get('sentry.event_level', logging.ERROR)
 
         log.debug('Adding Sentry middleware...')
         sentry_sdk.init(dsn=config.get('sentry.dsn'),
-                        integrations=[FlaskIntegration(), RqIntegration(), RedisIntegration()],
+                        integrations=[LoggingIntegration(**sentry_log_levels)],
                         environment=config.get('sentry.environment', ""),
                         traces_sample_rate=float(config.get('sentry.traces_sample_rate', 0.2)),
                         profiles_sample_rate=float(config.get('sentry.profiles_sample_rate', 0.2)))
-        SentryWsgiMiddleware(app)
+        app = SentryWsgiMiddleware(app)
         return app
-
-    @staticmethod
-    def _configure_logging(config):
-        '''
-        Configure the Sentry log handler to the specified level
-
-        Based on @rshk work on
-        https://github.com/opendatatrentino/ckanext-sentry
-        '''
-        handler = SentryHandler(config.get('sentry.dsn'))
-        handler.setLevel(logging.NOTSET)
-
-        loggers = ['', 'ckan', 'ckanext', 'sentry.errors']
-        sentry_log_level = config.get('sentry.log_level', logging.INFO)
-        for name in loggers:
-            logger = logging.getLogger(name)
-            logger.addHandler(handler)
-            logger.setLevel(sentry_log_level)
-
-        log.debug('Setting up Sentry logger with level {0}'.format(
-            sentry_log_level))
 
     # IBlueprint
     def get_blueprint(self):
