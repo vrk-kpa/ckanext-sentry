@@ -7,9 +7,6 @@ import logging
 import sentry_sdk
 from flask import Blueprint
 from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
-from sentry_sdk.integrations.flask import FlaskIntegration
-from sentry_sdk.integrations.rq import RqIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from ckan import plugins
