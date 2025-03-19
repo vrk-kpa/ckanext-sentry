@@ -28,6 +28,7 @@ class SentryPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IClick)
 
     # IMiddleware
 
@@ -85,6 +86,21 @@ class SentryPlugin(plugins.SingletonPlugin):
             'get_sentry_config': get_sentry_config,
             'get_sentry_loader_script': get_sentry_loader_script
         }
+
+    # IClick
+
+    def get_commands(self):
+        import click
+
+        @click.group(short_help="Debug commands for sentry.")
+        def sentry():
+            'Debug commands for sentry.'
+            pass
+
+        @sentry.command(short_help="Produces an error.")
+        def debug():
+            division_by_zero = 1 / 0  # noqa
+        return [sentry]
 
 
 def get_sentry_config():
