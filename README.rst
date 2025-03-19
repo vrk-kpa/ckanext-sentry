@@ -5,6 +5,7 @@ The Sentry CKAN extension allows to add a `Sentry`_ middleware to the CKAN and s
 
 This extension builds on top of the previous work of:
 
+* @amercader on https://github.com/okfn/ckanext-sentry
 * @noirbizarre on https://github.com/etalab/ckanext-sentry
 * @rshk on https://github.com/opendatatrentino/ckanext-sentry
 
@@ -17,10 +18,9 @@ To install the extension, activate your virtualenv and run::
 
 Alternative, you can install a development version with::
 
-    git clone https://github.com/okfn/ckanext-sentry.git
+    git clone https://github.com/vrk-kpa/ckanext-sentry.git
     cd ckanext-sentry
     python setup.py develop
-    pip install -r requirements.txt
 
 Configuration
 -------------
@@ -44,6 +44,7 @@ If you want Sentry to record your log messages, you can turn it on adding the fo
 
     sentry.configure_logging=True
     sentry.log_level=WARN
+    sentry.event_level=DEBUG
 
 The default log level if not provided in the configuration is INFO.
 
