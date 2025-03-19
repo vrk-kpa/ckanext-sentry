@@ -1,0 +1,42 @@
+[project]
+name="ckanext-sentry"
+version="1.0.0"
+description='Sentry support for CKAN'
+authors = [
+  {name="Adrià Mercader", email = "amercadero@gmail.com"},
+  {name="Jari Voutilainen", email = "jari.voutilainen@iki.fi"}
+]
+license = {text = "AGPL"}
+classifiers = [
+  "Intended Audience :: Developers",
+  "Development Status :: 5 - Production/Stable",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
+]
+keywords = [
+  "ckan",
+  "ckanext",
+  "sentry",
+]
+
+dependencies = [
+  "sentry-sdk[flask]"
+]
+
+[project.urls]
+Homepage = "http://github.com/vrk-kpa/ckanext-sentry"
+Repository = "https://github.com/vrk-kpa/ckanext-sentry"
+Issues = "https://github.com/vrk-kpa/ckanext-sentry/issues"
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.entry-points."ckan.plugins"]
+sentry = "ckanext.sentry.plugins:SentryPlugin"
+
+
