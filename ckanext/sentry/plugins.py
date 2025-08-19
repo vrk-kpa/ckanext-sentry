@@ -6,7 +6,6 @@ import logging
 
 import sentry_sdk
 from flask import Blueprint
-from sentry_sdk.integrations.wsgi import SentryWsgiMiddleware
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from ckan import plugins
@@ -56,7 +55,6 @@ class SentryPlugin(plugins.SingletonPlugin):
                         environment=config.get('sentry.environment', ""),
                         traces_sample_rate=float(config.get('sentry.traces_sample_rate', 0.2)),
                         profiles_sample_rate=float(config.get('sentry.profiles_sample_rate', 0.2)))
-        app = SentryWsgiMiddleware(app)
         return app
 
     # IBlueprint
