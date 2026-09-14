@@ -21,6 +21,7 @@ CONFIG_FROM_ENV_VARS = {
 }
 
 
+@plugins.toolkit.blanket.config_declarations
 class SentryPlugin(plugins.SingletonPlugin):
     '''A simple plugin that add the Sentry middleware to CKAN'''
     plugins.implements(plugins.IMiddleware, inherit=True)
@@ -45,16 +46,16 @@ class SentryPlugin(plugins.SingletonPlugin):
             'event_level': logging.ERROR
         }
 
-        if plugins.toolkit.asbool(config.get('sentry.configure_logging')):
-            sentry_log_levels['level'] = config.get('sentry.log_level', logging.INFO)
-            sentry_log_levels['event_level'] = config.get('sentry.event_level', logging.ERROR)
+        if config.get('sentry.configure_logging'):
+            sentry_log_levels['level'] = config.get('sentry.log_level')
+            sentry_log_levels['event_level'] = config.get('sentry.event_level')
 
         log.debug('Adding Sentry middleware...')
         sentry_sdk.init(dsn=config.get('sentry.dsn'),
                         integrations=[LoggingIntegration(**sentry_log_levels)],
                         environment=config.get('sentry.environment', ""),
-                        traces_sample_rate=float(config.get('sentry.traces_sample_rate', 0.2)),
-                        profiles_sample_rate=float(config.get('sentry.profiles_sample_rate', 0.2)))
+                        traces_sample_rate=float(config.get('sentry.traces_sample_rate')),
+                        profiles_sample_rate=float(config.get('sentry.profiles_sample_rate')))
         return app
 
     # IBlueprint

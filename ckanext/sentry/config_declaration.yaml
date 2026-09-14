@@ -1,0 +1,47 @@
+version: 1
+groups:
+  - annotation: Sentry settings
+    options:
+      - key: sentry.dsn
+        description: |
+          DSN for sentry
+
+      - key: sentry.environment
+        description: |
+          Environment for instance in sentry
+        example: prod
+
+      - key: sentry.traces_sample_rate
+        description: |
+          Sample rate for traces
+        example: 1.0
+        default: 0.2
+
+      - key: sentry.profiles_sample_rate
+        description: |
+          Sample rate for profiles
+        example: 1.0
+        default: 0.2
+
+      - key: sentry.loader_script
+        description: |
+          Loader script for sentry, present in sentry settings
+
+      - key: sentry.configure_logging
+        description: |
+          Boolean if logging for sentry is configured or not
+        default: false
+        example: false
+        type: bool
+
+      - key: sentry.log_level
+        description: |
+          Logging level for breadcrumbs
+        default: INFO
+
+      - key: sentry.event_level
+        description: |
+          Logging level for recording events
+        default: ERROR
+
+
