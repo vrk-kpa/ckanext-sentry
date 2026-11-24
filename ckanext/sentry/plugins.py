@@ -55,7 +55,8 @@ class SentryPlugin(plugins.SingletonPlugin):
                         integrations=[LoggingIntegration(**sentry_log_levels)],
                         environment=config.get('sentry.environment', ""),
                         traces_sample_rate=float(config.get('sentry.traces_sample_rate')),
-                        profiles_sample_rate=float(config.get('sentry.profiles_sample_rate')))
+                        profile_session_sample_rate=float(config.get('sentry.profiles_sample_rate')),
+                        profile_lifecycle="trace")
         return app
 
     # IBlueprint
